@@ -1,0 +1,31 @@
+name: Build Windows exe
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Build exe
+        run: |
+          pyinstaller --noconfirm --onefile --windowed --name RecordingSummarizer app.py
+
+      - name: Upload exe
+        uses: actions/upload-artifact@v4
+        with:
+          name: RecordingSummarizer-exe
+          path: dist/RecordingSummarizer.exe
